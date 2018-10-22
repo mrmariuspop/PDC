@@ -1,0 +1,16 @@
+Universe = vanilla
+Executable = prime.exe
+Log = prime.log.txt
+Output = o$(Process).txt
+Error = prime.err.txt
+when_to_transfer_output = ON_EXIT
+Arguments= 2 20
+Queue
+Arguments= 21 30
+Queue
+Arguments= 31 40
+Queue
+Arguments= 41 50
+Queue
+Arguments= 51 60
+Queue

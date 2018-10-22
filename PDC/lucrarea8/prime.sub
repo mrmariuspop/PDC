@@ -1,0 +1,14 @@
+Universe = vanilla
+Executable = aprogram.exe
+requirement = Memory  >= 128 && OpSys == "Windows"
+rank = ((machine == "D109-1")*2) + (machine == "D109-8") 
+Log = log.txt
+Output = Out_$(Process).txt
+Error = err.txt
+transfer_input_files = Interval1.txt, Interval2.txt
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Input = Interval1.txt
+Queue
+Input = Interval2.txt
+Queue
