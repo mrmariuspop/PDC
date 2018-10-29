@@ -1,0 +1,9 @@
+Universe = vanilla
+Executable = divide.exe
+Input = Interval.txt
+Log = setup.log.txt
+Output = setup.out.txt
+Error = setup.err.txt
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Queue

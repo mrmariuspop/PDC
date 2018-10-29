@@ -1,0 +1,10 @@
+Universe = vanilla
+Executable = aprogram.exe
+Input = Interval3.txt
+Log = process3.log.txt
+Output = process3.out.txt
+Error = process3.err.txt
+transfer_input_files = Interval3.txt
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Queue

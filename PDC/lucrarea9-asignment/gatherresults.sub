@@ -1,0 +1,15 @@
+Universe = vanilla
+Executable = final.exe
+Input = process1.out.txt
+Queue
+Input = process2.out.txt
+Queue
+Input = process3.out.txt
+Queue
+Log = gatherresults.log.txt
+Output = gatherresults.out.txt
+Error = gatherresults.err.txt
+transfer_input_files = process1.out.txt,process2.out.txt,process3.out.txt
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Queue

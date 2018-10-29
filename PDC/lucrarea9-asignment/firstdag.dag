@@ -1,0 +1,8 @@
+JOB Setup setup.sub
+JOB Process1 process1.sub
+JOB Process2 process2.sub
+JOB Process3 process3.sub
+JOB GatherResults gatherresults.sub
+
+PARENT Setup CHILD Process1 Process2 Process3
+PARENT Process1 Process2 Process3 CHILD GatherResults
