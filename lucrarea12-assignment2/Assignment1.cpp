@@ -1,81 +1,87 @@
 #include <stdio.h>
 #include "mpi.h"
+#include <stdlib.h>
 
 int main(int argc, char* argv[])
 {
-	FILE* file = fopen("inputa.txt", "r");
-
+	
 	int my_rank;
 	int p;
-	int c[1000];
-
-	int i;
+	int a[256] = {};
+	int b[256] = {};
+	int i; 
 	int x = 0;
 	MPI_Datatype my_type;
+	
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
 
-
-
-	for (i = 0; i < 999; i++)
-		c[i] = 0;
-
+	int work_flow = 1000 / (p-1);
+	
 
 	if (my_rank == 0)
 	{
-		for (i = 0; i < 333; i++)
+		for (int i = 1; i <= p-1; i++) 
 		{
-			fscanf(file, "%d", &x);
-			MPI_Send(&x, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+			MPI_Send(&work_flow, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
 		}
 
-
-		for (i = 334; i < 666; i++)
+		for (int i = 1; i <= p-1; i++)
 		{
-			fscanf(file, "%d", &x);
-			MPI_Send(&x, 1, MPI_INT, 2, 0, MPI_COMM_WORLD);
+			MPI_Recv(&a, 256, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
+			for (int j = 0; j <= 255; j++) 
+			{
+				b[j]+= a[j];
+			}
 		}
 
-
-		for (i = 667; i < 1000; i++)
+		for (int j = 0; j <= 255; j++) 
 		{
-			fscanf(file, "%d", &x);
-			MPI_Send(&x, 1, MPI_INT, 3, 0, MPI_COMM_WORLD);
+			printf("j = %d %d\n",j,b[j]);
 		}
-
 	}
 
 
 	if (my_rank != 0)
 	{
-		for (i = 0; i < 333; i++)
+		int work_flow;
+		MPI_Recv(&work_flow, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+		FILE* file = fopen("inputa.txt", "r");
+		int buf;
+
+		//for positioning in the file
+		for (int i = 0; i < (my_rank - 1)* work_flow; i++) 
 		{
-			MPI_Recv(&x, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			c[i] = x;
+			fscanf(file, "%d", &buf);
 		}
 
-		for (i = 334; i < 666; i++)
+
+		if (my_rank < p-1) 
 		{
-			MPI_Recv(&x, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			c[i] = x;
+			for (int i = (my_rank - 1)* work_flow; i < my_rank * work_flow; i++) 
+			{
+				fscanf(file, "%d", &buf);
+				a[buf]++;
+			}
+		}else 
+		{
+			while (fscanf(file, "%d", &buf) != EOF) 
+			{
+				a[buf]++;
+			}
 		}
 
-		for (i = 667; i < 1000; i++)
-		{
-			MPI_Recv(&x, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			c[i] = x;
-		}
+		MPI_Send(&a, 256, MPI_INT, 0, 0, MPI_COMM_WORLD);
+
+			
 
 	}
 
-	for (int i = 0; i < 1000; i++)
-	{
-		printf("c[%d] = %d\n", i, c[i]);
-	}
-
+	
 	MPI_Finalize();
 	return 0;
 }
